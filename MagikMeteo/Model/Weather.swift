@@ -15,6 +15,8 @@ struct Weather: Decodable {
     let pression: Pression
     let risqueNeige: String
 
+    var date: Date?
+
     private enum CodingKeys: String, CodingKey {
         case temperature
         case pression

@@ -10,7 +10,7 @@ import Foundation
 
 class WeatherStore: Decodable {
 
-    var entries: [Date: Weather]
+    var allEntries: [Weather]
 
     private struct CustomCodingKeys: CodingKey {
         var intValue: Int?
@@ -24,6 +24,7 @@ class WeatherStore: Decodable {
         }
     }
 
+
     private static let formatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
@@ -31,17 +32,34 @@ class WeatherStore: Decodable {
     }()
 
 
-
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CustomCodingKeys.self)
 
-        self.entries = container.allKeys.reduce([:], { (result, key) -> [Date: Weather] in
+        self.allEntries = container.allKeys.reduce([], { (result, key) -> [Weather] in
+
             var result = result
-            if let weather = try? container.decodeIfPresent(Weather.self, forKey: CustomCodingKeys(stringValue: key.stringValue)!),
+            if var weather = try? container.decodeIfPresent(Weather.self, forKey: CustomCodingKeys(stringValue: key.stringValue)!),
                 let inputDate = WeatherStore.formatter.date(from: key.stringValue) {
-                result[inputDate] = weather
+                weather.date = inputDate
+                result.append(weather)
+                return result
             }
             return result
         })
+
+        self.sortEntries()
+    }
+
+
+    private func sortEntries() {
+        self.allEntries.sort { (leftElmt, rightElmt) -> Bool in
+
+            if let leftDate = leftElmt.date,
+                let rightDate = rightElmt.date {
+                return leftDate < rightDate
+            }
+
+            return rightElmt.date != nil
+        }
     }
 }
