@@ -16,7 +16,7 @@ class WSManager: NSObject {
 
     func fetchWeather(lat: String, lon: String, completion: @escaping (Swift.Result<WeatherStore, Error>) -> Void ) {
 
-        Alamofire.request(Router.fetch(lat: lat, lon: lon)).responseJSON { (response: DataResponse<Any>) in
+        Alamofire.request(Router.fetch(lat: lat, lon: lon)).validate().responseJSON { (response: DataResponse<Any>) in
 
             switch response.result {
             case .success:

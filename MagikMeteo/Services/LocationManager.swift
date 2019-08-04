@@ -14,10 +14,24 @@ enum LocationManagerError: Error {
 
 class LocationManager: NSObject {
 
+    var currentTry = 1
+    static let maxNumberOfTries = 2
+
     private let creationDate: Date
 
+    var handler: ((Result<CLLocation, Error>) -> Void)?
+
     static let shared = LocationManager()
-    override private init() { self.creationDate = Date() }
+    override init() {
+        
+        self.creationDate = Date()
+
+        super.init()
+
+        self.locationManager.delegate = self
+        self.locationManager.requestWhenInUseAuthorization()
+    }
+
 
     var locationManager: CLLocationManager = {
         var locationManager = CLLocationManager()
@@ -25,9 +39,8 @@ class LocationManager: NSObject {
         return locationManager
     }()
 
-    var handler: ((Result<CLLocation, Error>) -> Void)?
-
     func requestCurrentLocation(callback: @escaping (Result<CLLocation, Error>) -> Void) {
+
         self.handler = callback
 
         locationManager.requestLocation()
@@ -45,15 +58,30 @@ extension LocationManager : CLLocationManagerDelegate {
         guard let lastLocation = locations.last,
             lastLocation.timestamp > creationDate else {
 
-                self.handler?(.failure(LocationManagerError.invalidData))
+                self.handleInvalidData()
                 return
         }
 
+        self.currentTry = 0
         self.handler?(.success(lastLocation))
     }
 
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         self.handler?(.failure(error))
+    }
+
+
+    // Loop and retry up to 3 times
+    private func handleInvalidData() {
+        guard let handler = self.handler else { return }
+
+        if self.currentTry > LocationManager.maxNumberOfTries {
+            self.handler?(.failure(LocationManagerError.invalidData))
+            return
+        }
+
+        self.currentTry += 1
+        self.requestCurrentLocation(callback: handler)
     }
 }

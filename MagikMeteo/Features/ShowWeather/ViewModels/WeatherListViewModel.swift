@@ -10,29 +10,37 @@ import Foundation
 
 class WeatherListViewModel {
 
-    var weatherStore: Dynamic<WeatherStore?>
+    var weatherStore: Dynamic<WeatherStore>
 
     var loadingMessage: Dynamic<String>
     var errorMessage: Dynamic<String>
 
+    var selectedWeather: Dynamic<Weather?>
+
     var minNumberOfVisibleElements: Int
 
-    init() {
+    var locationManager: LocationManager
+
+    init(withLocationManager locationManager: LocationManager, weatherStore store: WeatherStore) {
 
         self.minNumberOfVisibleElements = 5
-        self.weatherStore = Dynamic(nil)
+        self.weatherStore = Dynamic(store)
         self.loadingMessage = Dynamic("")
         self.errorMessage = Dynamic("")
+
+        self.selectedWeather = Dynamic(nil)
+
+        self.locationManager = locationManager
     }
 
 
     func viewModelForElement(withIndex index: Int) -> WeatherCellViewModel {
-        return WeatherCellViewModel(withDate: weatherStore.value?.allEntries[index].date)
+        return WeatherCellViewModel(withDate: weatherStore.value.allEntries[index].date)
     }
 
 
     var numberOfElements: Int {
-        return self.weatherStore.value?.allEntries.count ?? 0
+        return self.weatherStore.value.allEntries.count
     }
 
 
@@ -44,39 +52,47 @@ class WeatherListViewModel {
     }
 
 
+    func didSelectRow(atIndex index: Int) {
+        guard self.weatherStore.value.allEntries.count > index else {
+                return
+        }
+
+        self.selectedWeather.value = self.weatherStore.value.allEntries[index]
+    }
+
+
     /*****************************************************************************/
     // MARK: - Private
 
-    private func loadData() {
+    func loadData() {
 
         self.setLoadingMessage("Finding your position...")
-        LocationManager.shared.requestCurrentLocation { locationResult in
+        self.locationManager.requestCurrentLocation { [weak self] locationResult in
             switch locationResult {
             case .success(let location):
-                self.setLoadingMessage("Requesting data from server...")
-                WeatherStore.loadFromService(lat: String(location.coordinate.latitude), lon: String(location.coordinate.longitude), completion: { storeResult in
+                self?.setLoadingMessage("Requesting data from server...")
+                WeatherStore.loadFromService(lat: String(location.coordinate.latitude), lon: String(location.coordinate.longitude), completion: { [weak self] storeResult in
                     switch storeResult {
                     case .success(let store):
-                        self.weatherStore.value = store
-                        self.finishLoading()
+                        self?.weatherStore.value = store
+                        self?.finishLoading()
                     case .failure(let serviceError):
-                        self.handleServiceFailure(serviceError)
+                        self?.handleServiceFailure(serviceError)
                     }
                 })
             case .failure(let locationError):
-                self.handleServiceFailure(locationError)
+                self?.handleServiceFailure(locationError)
             }
         }
     }
 
 
     private func handleServiceFailure(_ error: Error) {
-        print(error.localizedDescription)
+        print("handleServiceFailure: \(error.localizedDescription)")
 
         do {
-            let store = WeatherStore()
-            try store.loadFromDisk()
-            self.weatherStore.value = store
+
+            try self.weatherStore.value.loadFromDisk()
             self.finishLoading()
         } catch let error {
             self.finishLoading(withError: error)

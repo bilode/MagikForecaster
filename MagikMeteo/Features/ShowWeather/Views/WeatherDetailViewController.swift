@@ -10,6 +10,16 @@ import UIKit
 
 class WeatherDetailViewController: UIViewController {
 
+    @IBOutlet weak var tempSectionTitleLabel: UILabel!
+    @IBOutlet weak var temp2MLabel: UILabel!
+    @IBOutlet weak var tempSolLabel: UILabel!
+
+    @IBOutlet weak var pressionSectionTitleLabel: UILabel!
+    @IBOutlet weak var pressionNiveauMerLabel: UILabel!
+
+    @IBOutlet weak var risqueNeigeLabel: UILabel!
+
+
     var viewModel: WeatherDetailViewModel? {
         didSet {
             self.fillUI()
@@ -29,6 +39,13 @@ class WeatherDetailViewController: UIViewController {
                 return
         }
 
+        self.tempSectionTitleLabel.text = viewModel.temperature
+        self.temp2MLabel.text = viewModel.temp2m
+        self.tempSolLabel.text = viewModel.tempSol
 
+        self.pressionSectionTitleLabel.text = viewModel.pression
+        self.pressionNiveauMerLabel.text = viewModel.pressionNiveauMer
+
+        self.risqueNeigeLabel.text = viewModel.risqueNeigeValue
     }
 }

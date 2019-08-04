@@ -14,9 +14,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
+    private var weatherCoordinator: WeatherListCoordinator?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        let weatherCoordinator = WeatherListCoordinator(window: window)
+
+        self.window = window
+        self.weatherCoordinator = weatherCoordinator
+
+        weatherCoordinator.start()
+
         return true
     }
 

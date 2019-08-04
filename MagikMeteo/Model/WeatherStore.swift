@@ -79,9 +79,14 @@ class WeatherStore: Decodable, Equatable {
     /*****************************************************************************/
     // MARK: - Services
 
-    static func loadFromService(lat: String, lon: String, completion: @escaping (Result<WeatherStore, Error>) -> Void) {
+    class func loadFromService(lat: String, lon: String, completion: @escaping (Result<WeatherStore, Error>) -> Void) {
 
         WSManager.shared.fetchWeather(lat: lat, lon: lon) { result in
+
+            if case .success(let store) = result {
+                try? store.saveToDisk()
+            }
+
             completion(result)
         }
     }

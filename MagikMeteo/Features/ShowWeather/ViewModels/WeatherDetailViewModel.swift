@@ -10,9 +10,27 @@ import Foundation
 
 class WeatherDetailViewModel {
 
-    var weatherEntry: Weather
+    let weatherEntry: Weather
 
-    init(withWeatherEntry weatherEntry: Weather) {
+    let temperature: String
+    let temp2m: String
+    let tempSol: String
+
+    let pression: String
+    let pressionNiveauMer: String
+
+    let risqueNeigeValue: String
+
+    init(fromWeatherEntry weatherEntry: Weather) {
         self.weatherEntry = weatherEntry
+
+        self.temperature = "Temperature"
+        self.temp2m = String(format: "2m: %.2f", weatherEntry.temperature._2m)
+        self.tempSol = String(format: "sol: %.2f", weatherEntry.temperature.sol)
+
+        self.pression = "Pression"
+        self.pressionNiveauMer = "Niveau de la mer: \(weatherEntry.pression.niveauDeLaMer)"
+
+        self.risqueNeigeValue = "Risque de neige: \(weatherEntry.risqueNeige)"
     }
 }
