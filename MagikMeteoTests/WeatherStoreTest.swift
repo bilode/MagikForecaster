@@ -9,6 +9,15 @@
 @testable import MagikMeteo
 import XCTest
 
+class WeatherStoreMock: WeatherStore {
+
+    override var storeFileName: String {
+        get {
+            return "testStoreFileName.json"
+        }
+    }
+}
+
 class WeatherStoreTest: XCTestCase {
 
 
@@ -31,5 +40,27 @@ class WeatherStoreTest: XCTestCase {
             XCTFail(e.localizedDescription)
         }
     }
+    
 
+    func testDiskSerialization() {
+
+        guard let path = Bundle(for: WeatherStoreTest.self).path(forResource: "responseSample", ofType: "json") else {
+            XCTFail()
+            return
+        }
+
+        do {
+            let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
+            let store = try JSONDecoder().decode(WeatherStoreMock.self, from: data)
+            try store.saveToDisk()
+
+            let weatherStoreFromDisk = WeatherStoreMock()
+            try weatherStoreFromDisk.loadFromDisk()
+
+            XCTAssertEqual(store, weatherStoreFromDisk)
+
+        } catch let error {
+            XCTFail(error.localizedDescription)
+        }
+    }
 }

@@ -17,12 +17,12 @@ class WeatherCellViewModel {
         self.stringDate = WeatherCellViewModel.stringForDate(date)
     }
 
+    
     private static let formatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE d MMMM yyyy H' h 'mm"
         return formatter
     }()
-
 
     private static func stringForDate(_ date: Date?) -> String {
 

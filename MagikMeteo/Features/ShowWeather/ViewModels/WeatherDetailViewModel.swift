@@ -10,5 +10,9 @@ import Foundation
 
 class WeatherDetailViewModel {
 
-    
+    var weatherEntry: Weather
+
+    init(withWeatherEntry weatherEntry: Weather) {
+        self.weatherEntry = weatherEntry
+    }
 }

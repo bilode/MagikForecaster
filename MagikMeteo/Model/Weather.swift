@@ -9,7 +9,7 @@
 import Foundation
 
 
-struct Weather: Decodable {
+struct Weather: Codable, Equatable {
 
     let temperature: Temperature
     let pression: Pression
@@ -21,11 +21,15 @@ struct Weather: Decodable {
         case temperature
         case pression
         case risqueNeige = "risque_neige"
+        case date
     }
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
+        if let date = try? container.decode(Date.self, forKey: .date) {
+            self.date = date
+        }
         self.temperature = try container.decode(Temperature.self, forKey: .temperature)
         self.pression = try container.decode(Pression.self, forKey: .pression)
         self.risqueNeige = try container.decode(String.self, forKey: .risqueNeige)
@@ -33,7 +37,7 @@ struct Weather: Decodable {
 }
 
 
-struct Temperature: Decodable {
+struct Temperature: Codable, Equatable {
     let _2m: Double
     let sol: Double
     let _500hPa: Double
@@ -56,7 +60,8 @@ struct Temperature: Decodable {
     }
 }
 
-struct Pression: Decodable {
+
+struct Pression: Codable, Equatable {
     let niveauDeLaMer: Int
 
     private enum CodingKeys: String, CodingKey {

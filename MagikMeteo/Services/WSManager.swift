@@ -14,7 +14,7 @@ class WSManager: NSObject {
     public static let shared = WSManager()
     override private init() { }
 
-    func fetchWeather(lat: String, lon: String, completion: @escaping (Result<WeatherStore>) -> Void ) {
+    func fetchWeather(lat: String, lon: String, completion: @escaping (Swift.Result<WeatherStore, Error>) -> Void ) {
 
         Alamofire.request(Router.fetch(lat: lat, lon: lon)).responseJSON { (response: DataResponse<Any>) in
 

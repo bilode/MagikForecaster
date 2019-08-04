@@ -8,7 +8,12 @@
 
 import Foundation
 
-class WeatherStore: Decodable {
+struct Const {
+    static let storeFileName = "store.json"
+}
+
+class WeatherStore: Decodable, Equatable {
+
 
     var allEntries: [Weather]
 
@@ -32,6 +37,9 @@ class WeatherStore: Decodable {
     }()
 
 
+    /*****************************************************************************/
+    // MARK: - Initializers
+
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CustomCodingKeys.self)
 
@@ -51,6 +59,11 @@ class WeatherStore: Decodable {
     }
 
 
+    init() {
+        self.allEntries = []
+    }
+
+
     private func sortEntries() {
         self.allEntries.sort { (leftElmt, rightElmt) -> Bool in
 
@@ -61,5 +74,51 @@ class WeatherStore: Decodable {
 
             return rightElmt.date != nil
         }
+    }
+
+    /*****************************************************************************/
+    // MARK: - Services
+
+    func loadFromService(lat: String, lon: String, completion: @escaping (Result<WeatherStore, Error>) -> Void) {
+
+        WSManager.shared.fetchWeather(lat: lat, lon: lon) { result in
+            completion(result)
+        }
+    }
+
+    /*****************************************************************************/
+    // MARK: - Persistence management
+
+    var storeFileName: String {
+        get {
+            return Const.storeFileName
+        }
+    }
+
+    func saveToDisk() throws {
+        let jsonData = try JSONEncoder().encode(self.allEntries)
+
+        let fileURL = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent(self.storeFileName)
+
+        try jsonData.write(to: fileURL, options: .atomic)
+    }
+
+
+    func loadFromDisk() throws {
+        let fileURL = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent(self.storeFileName)
+
+        let data = try Data(contentsOf: fileURL)
+
+        self.allEntries = try JSONDecoder().decode([Weather].self, from: data)
+
+        self.sortEntries()
+    }
+
+
+    /*****************************************************************************/
+    // MARK: - Equatable
+
+    static func == (lhs: WeatherStore, rhs: WeatherStore) -> Bool {
+        return lhs.allEntries == rhs.allEntries
     }
 }
