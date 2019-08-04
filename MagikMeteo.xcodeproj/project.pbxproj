@@ -28,6 +28,7 @@
 		3455F12F22F5E05C00AE6DA8 /* WeatherCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3455F12E22F5E05C00AE6DA8 /* WeatherCellViewModel.swift */; };
 		3455F13322F7159A00AE6DA8 /* WeatherListCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3455F13222F7159A00AE6DA8 /* WeatherListCoordinator.swift */; };
 		3455F13522F71E2500AE6DA8 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3455F13422F71E2500AE6DA8 /* LocationManager.swift */; };
+		3455F13722F73D1F00AE6DA8 /* Dynamic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3455F13622F73D1F00AE6DA8 /* Dynamic.swift */; };
 		47EE84231B4F157A0747A58F /* Pods_MagikMeteo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 702FF57B31A4ADF7D906A9BD /* Pods_MagikMeteo.framework */; };
 /* End PBXBuildFile section */
 
@@ -69,6 +70,7 @@
 		3455F12E22F5E05C00AE6DA8 /* WeatherCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherCellViewModel.swift; sourceTree = "<group>"; };
 		3455F13222F7159A00AE6DA8 /* WeatherListCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherListCoordinator.swift; sourceTree = "<group>"; };
 		3455F13422F71E2500AE6DA8 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		3455F13622F73D1F00AE6DA8 /* Dynamic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dynamic.swift; sourceTree = "<group>"; };
 		702FF57B31A4ADF7D906A9BD /* Pods_MagikMeteo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MagikMeteo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -179,6 +181,7 @@
 		3451D99B22F4A206000F314E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				3455F13622F73D1F00AE6DA8 /* Dynamic.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -380,6 +383,7 @@
 				3455F12D22F5E05100AE6DA8 /* WeatherCell.swift in Sources */,
 				3455F12122F5CF9900AE6DA8 /* WeatherListViewController.swift in Sources */,
 				3451D9A222F4AEAD000F314E /* Weather.swift in Sources */,
+				3455F13722F73D1F00AE6DA8 /* Dynamic.swift in Sources */,
 				3451D97622F496E9000F314E /* AppDelegate.swift in Sources */,
 				3455F13322F7159A00AE6DA8 /* WeatherListCoordinator.swift in Sources */,
 			);

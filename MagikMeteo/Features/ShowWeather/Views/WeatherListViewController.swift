@@ -22,15 +22,13 @@ class WeatherListViewController: UIViewController {
         super.viewDidLoad()
 
         self.fillUI()
+    }
 
-        WSManager.shared.fetchWeather(lat: "48.85341", lon: "2.3488") { result in
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
 
-            switch result {
-            case .success(let store):
-                self.viewModel = WeatherListViewModel(withStore: store)
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
+        if self.isBeingPresented || self.isMovingToParent {
+            self.viewModel?.viewIsReady()
         }
     }
 
@@ -43,6 +41,12 @@ class WeatherListViewController: UIViewController {
 
         self.tableView.dataSource = self
         self.tableView.delegate = self
+
+        viewModel?.weatherStore.bindAndFire { store in
+            if store != nil {
+                self.tableView.reloadData()
+            }
+        }
 
         tableView.reloadData()
     }
